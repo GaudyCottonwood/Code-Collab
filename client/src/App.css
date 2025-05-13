@@ -1,0 +1,129 @@
+/* client/src/App.css */
+html, body, #root {
+  contain: layout style;
+}
+
+:root {
+    --font: 'Fira Code', monospace;
+    --bg: #121212;
+    --fg: #eee;
+    --panel-bg: #1e1e1e;
+    --accent: #4caf50;
+    --secondary: #2196f3;
+  }
+  
+  * {
+    box-sizing: border-box;
+  }
+  
+  body, html, #root {
+    margin: 0; padding: 0; height: 100%;
+  }
+  
+  .container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--fg);
+  }
+  
+  /* Top split: 50/50 horizontally, 70–80% height */
+  .top-split {
+    flex: 0 0 75%;  /* adjust to taste between 70–80% */
+    display: flex;
+  }
+  
+  .editor-pane,
+  .output-pane {
+    flex: 1;
+    padding: 0.5em;
+    overflow: hidden;
+  }
+  
+  .output-pane {
+    background: var(--panel-bg);
+  }
+  
+  .output-pane pre {
+    margin: 0;
+    height: 100%;
+    overflow: auto;
+  }
+  
+  /* Controls row */
+  .controls {
+    flex: 0 0 auto;
+    display: flex;
+    gap: 0.5em;
+    padding: 0.5em;
+    background: var(--panel-bg);
+  }
+  
+  .controls button {
+    background: var(--accent);
+    border: none;
+    color: white;
+    padding: 0.5em 1em;
+    cursor: pointer;
+  }
+  
+  .controls button:disabled {
+    background: #555;
+    cursor: not-allowed;
+  }
+  
+  .controls input[type="file"] {
+    cursor: pointer;
+  }
+  
+  /* Shared files at bottom, filling remaining space */
+  .shared-files {
+    flex: 1;
+    overflow: auto;
+    background: #fafafa;
+    color: #000;
+    padding: 1em;
+  }
+  
+  .shared-files h4 {
+    margin: 0 0 0.5em;
+  }
+  
+  .shared-files ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .shared-files li + li {
+    margin-top: 0.25em;
+  }
+  
+  .shared-files a {
+    color: var(--secondary);
+    text-decoration: none;
+  }
+  /* ——————— Drag‑and‑Drop visual feedback ——————— */
+
+.shared-files {
+    position: relative;
+    transition: background-color 0.2s;
+  }
+  
+  .shared-files.drag-over {
+    background-color: #e3f2fd;    /* light blue to indicate drop zone */
+    border: 2px dashed #90caf9;    /* dashed outline */
+  }
+  
+  .shared-files .drop-hint {
+    position: absolute;
+    bottom: 1em;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.9em;
+    color: #666;
+    pointer-events: none;
+  }
+  
