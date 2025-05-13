@@ -1,55 +1,45 @@
-// Suppress irrelevant runtime errors (especially from Monaco on mobile)
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import App from './App';
+import './App.css'; // Assuming App.css contains global styles or styles for App.js
+
+// Global error handler for specific, known, non-critical errors.
+// It's generally better to handle errors within components using Error Boundaries
+// or to let React's development overlay show them.
+// Use this sparingly.
 window.addEventListener('error', (e) => {
   const msg = e.message || '';
-  if (msg === 'Script error.' || msg.includes('Canceled')) {
-    e.preventDefault();
-    e.stopImmediatePropagation();
+  // Suppress ResizeObserver loop errors, which are common and usually benign in dev.
+  if (msg.includes('ResizeObserver loop') || msg.includes('Script error.') || msg.includes('Canceled')) {
+    // e.preventDefault(); // Be cautious with preventDefault on global errors
+    // e.stopImmediatePropagation(); // Be cautious with stopImmediatePropagation
+    console.warn('Suppressed known error:', msg); // Log it instead of silently ignoring
   }
 });
 
 window.addEventListener('unhandledrejection', (e) => {
   const reason = e.reason || {};
-  const msg = reason.message || reason.toString();
-  if (msg === 'Script error.' || msg.includes('Canceled')) {
-    e.preventDefault();
-    e.stopImmediatePropagation();
+  const msg = reason.message || String(reason);
+  if (msg.includes('Script error.') || msg.includes('Canceled')) {
+    // e.preventDefault();
+    // e.stopImmediatePropagation();
+    console.warn('Suppressed known unhandled rejection:', msg);
   }
 });
-window.addEventListener('error', (e) => {
-  const msg = e.message || '';
-  if (msg === 'Script error.' || msg.includes('Canceled')) {
-    e.preventDefault();
-    e.stopImmediatePropagation();
-  }
-});
-
-window.addEventListener('unhandledrejection', (e) => {
-  const msg = (e.reason && e.reason.message) || '';
-  if (msg === 'Script error.' || msg.includes('Canceled')) {
-    e.preventDefault();
-  }
-});
-window.addEventListener('error', (e) => {
-  if (
-    e.message &&
-    e.message.includes('ResizeObserver loop completed with undelivered notifications')
-  ) {
-    e.preventDefault();
-    e.stopImmediatePropagation();
-  }
-});
-
-// — now your normal React bootstrap below —
-import React from 'react';
-import { createRoot } from 'react-dom/client';
-import App from './App';
 
 const container = document.getElementById('root');
-const root = createRoot(container);
-const observerErrorHandler = (e) => {
-  if (e.message && e.message.includes('ResizeObserver loop')) {
-    e.stopImmediatePropagation();
-  }
-};
-window.addEventListener('error', observerErrorHandler);
-root.render(<App />);
+
+if (container) {
+  const root = createRoot(container);
+  root.render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
+  );
+} else {
+  console.error(
+    "Fatal Error: The root element with ID 'root' was not found in your public/index.html. React cannot mount the application."
+  );
+  // You could display a message to the user on the page itself here if you want.
+  document.body.innerHTML = '<div style="padding: 20px; text-align: center; font-family: sans-serif;"><h1>Application Error</h1><p>Could not find the root HTML element to launch the application. Please check the console.</p></div>';
+}

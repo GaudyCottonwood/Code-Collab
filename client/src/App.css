@@ -1,129 +1,197 @@
 /* client/src/App.css */
-html, body, #root {
-  contain: layout style;
+:root {
+  --font: 'Fira Code', monospace;
+  --bg: #121212;
+  --fg: #eee;
+  --panel-bg: #1e1e1e;
+  --accent: #4caf50;
+  --secondary: #2196f3;
+  --danger: #f44336; /* For clear/delete actions */
+  --border-color: #333;
+  --input-bg: #333;
+  --button-text: white;
+  --drop-zone-bg: #e3f2fd;
+  --drop-zone-border: #90caf9;
+  --text-muted: #666;
 }
 
-:root {
-    --font: 'Fira Code', monospace;
-    --bg: #121212;
-    --fg: #eee;
-    --panel-bg: #1e1e1e;
-    --accent: #4caf50;
-    --secondary: #2196f3;
-  }
-  
-  * {
-    box-sizing: border-box;
-  }
-  
-  body, html, #root {
-    margin: 0; padding: 0; height: 100%;
-  }
-  
-  .container {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    font-family: var(--font);
-    background: var(--bg);
-    color: var(--fg);
-  }
-  
-  /* Top split: 50/50 horizontally, 70–80% height */
-  .top-split {
-    flex: 0 0 75%;  /* adjust to taste between 70–80% */
-    display: flex;
-  }
-  
-  .editor-pane,
-  .output-pane {
-    flex: 1;
-    padding: 0.5em;
-    overflow: hidden;
-  }
-  
-  .output-pane {
-    background: var(--panel-bg);
-  }
-  
-  .output-pane pre {
-    margin: 0;
-    height: 100%;
-    overflow: auto;
-  }
-  
-  /* Controls row */
-  .controls {
-    flex: 0 0 auto;
-    display: flex;
-    gap: 0.5em;
-    padding: 0.5em;
-    background: var(--panel-bg);
-  }
-  
-  .controls button {
-    background: var(--accent);
-    border: none;
-    color: white;
-    padding: 0.5em 1em;
-    cursor: pointer;
-  }
-  
-  .controls button:disabled {
-    background: #555;
-    cursor: not-allowed;
-  }
-  
-  .controls input[type="file"] {
-    cursor: pointer;
-  }
-  
-  /* Shared files at bottom, filling remaining space */
-  .shared-files {
-    flex: 1;
-    overflow: auto;
-    background: #fafafa;
-    color: #000;
-    padding: 1em;
-  }
-  
-  .shared-files h4 {
-    margin: 0 0 0.5em;
-  }
-  
-  .shared-files ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  
-  .shared-files li + li {
-    margin-top: 0.25em;
-  }
-  
-  .shared-files a {
-    color: var(--secondary);
-    text-decoration: none;
-  }
-  /* ——————— Drag‑and‑Drop visual feedback ——————— */
+* {
+  box-sizing: border-box;
+}
 
+body,
+html,
+#root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--fg);
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Top split: editor and output panes */
+.top-split {
+  flex: 3; /* Give more space to editor/output */
+  display: flex;
+  min-height: 0; /* Important for flex children to shrink properly */
+}
+
+.editor-pane,
+.output-pane {
+  flex: 1;
+  padding: 0.5em;
+  overflow: auto; /* Changed from hidden to auto for editor content */
+  border: 1px solid var(--border-color);
+  margin: 0.25em;
+  border-radius: 4px;
+}
+
+.output-pane {
+  background: var(--panel-bg);
+}
+
+.output-pane pre {
+  margin: 0;
+  height: 100%;
+  overflow: auto;
+  white-space: pre-wrap; /* Allow wrapping of long lines */
+  word-break: break-all; /* Break long words if necessary */
+}
+
+/* Controls row */
+.controls {
+  flex: 0 0 auto; /* Don't grow or shrink, take auto height */
+  display: flex;
+  gap: 0.5em;
+  padding: 0.75em;
+  background: var(--panel-bg);
+  align-items: center; /* Align items vertically */
+  border-top: 1px solid var(--border-color);
+}
+
+.controls button,
+.language-selector {
+  border: none;
+  color: var(--button-text);
+  padding: 0.5em 1em;
+  cursor: pointer;
+  border-radius: 4px;
+  font-family: var(--font);
+  transition: background-color 0.2s ease;
+}
+
+.controls button:disabled {
+  background: #555;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.controls input[type="file"] {
+  /* Hidden, triggered by button */
+}
+
+.language-selector {
+  padding: 0.5em 0.8em; /* Slightly adjusted padding */
+  margin-right: 0.5em;
+  background-color: var(--input-bg);
+  border: 1px solid #555;
+}
+.language-selector:hover {
+  border-color: #777;
+}
+
+.controls button.run-button {
+  background-color: var(--accent);
+}
+.controls button.run-button:hover:not(:disabled) {
+  background-color: #45a049;
+}
+
+.controls button.upload-button {
+  background-color: var(--secondary);
+}
+.controls button.upload-button:hover:not(:disabled) {
+  background-color: #1e88e5;
+}
+
+.controls button.clear-button {
+  background-color: var(--danger);
+  margin-left: auto; /* Push clear button to the right */
+}
+.controls button.clear-button:hover:not(:disabled) {
+  background-color: #d32f2f;
+}
+
+
+/* Shared files at bottom */
 .shared-files {
-    position: relative;
-    transition: background-color 0.2s;
-  }
-  
-  .shared-files.drag-over {
-    background-color: #e3f2fd;    /* light blue to indicate drop zone */
-    border: 2px dashed #90caf9;    /* dashed outline */
-  }
-  
-  .shared-files .drop-hint {
-    position: absolute;
-    bottom: 1em;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 0.9em;
-    color: #666;
-    pointer-events: none;
-  }
-  
+  flex: 1; /* Allow shared files to take remaining space */
+  overflow: auto;
+  background: var(--panel-bg); /* Consistent with other panels */
+  color: var(--fg);
+  padding: 1em;
+  border-top: 1px solid var(--border-color);
+  position: relative; /* For drop-hint positioning */
+  transition: background-color 0.2s;
+}
+
+.shared-files.drag-over {
+  background-color: var(--drop-zone-bg);
+  border: 2px dashed var(--drop-zone-border);
+  color: #000; /* Text color for drop zone */
+}
+
+.shared-files h4 {
+  margin: 0 0 0.75em;
+  font-size: 1.1em;
+}
+
+.shared-files ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.shared-files li + li {
+  margin-top: 0.35em;
+}
+
+.shared-files a {
+  color: var(--secondary);
+  text-decoration: none;
+  word-break: break-all;
+}
+
+.shared-files a:hover {
+  text-decoration: underline;
+}
+
+.shared-files .drop-hint {
+  position: absolute;
+  bottom: 1em;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.9em;
+  color: var(--text-muted);
+  pointer-events: none; /* So it doesn't interfere with drop events */
+}
+
+/* Styling for SimpleEditor on mobile to make it more visible */
+.mobile-editor {
+  background-color: var(--panel-bg); /* Dark background similar to Monaco */
+  color: #d4d4d4; /* Light text color */
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  height: 100%; /* Ensure it fills its pane */
+  font-family: var(--font);
+  font-size: 14px;
+  overflow: auto;
+  padding: 10px; /* Add some padding inside the editor */
+}
